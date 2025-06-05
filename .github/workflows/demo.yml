@@ -20,7 +20,7 @@ jobs:
   build:
     needs: test
     runs-on: ubuntu-latest
-    output:
+    outputs:
       jobvalue: ${{ steps.publish.outputs.script-file }}  #instead of jobvalue you can give any variable name 
     steps:
       - name: Get code
