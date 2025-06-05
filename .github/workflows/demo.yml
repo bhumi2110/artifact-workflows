@@ -15,6 +15,8 @@ jobs:
   build:
     needs: test
     runs-on: ubuntu-latest
+    output:
+      jobvalue: ${{ steps.publish.outputs.script-file }}  #instead of jobvalue you can give any variable name 
     steps:
       - name: Get code
         uses: actions/checkout@v3
@@ -22,6 +24,11 @@ jobs:
         run: npm ci
       - name: Build website
         run: npm run build
+      - name: publish JS FILE
+        id: publish #you can give any unique id value 
+        run: find dist/assets/*.js -type f -execdir echo 'script-file={}'>> $GITHUB_OUTPUT ';'  #instead of script-file you can give any variable name 
+      # instead we can also define  but the below one may not be accepted in future anymore 
+      #run: find dist/assets/*.js -type f -execdir echo '::set-output name=script-file::{}' ';'
       - name: upload artifcats
         uses: actions/upload-artifact@v4
         with:
@@ -37,5 +44,7 @@ jobs:
           name: dist-files
       - name: output contents
         run: ls
+      - name: output filename 
+        run: echo "${{needs.build.outputs.jobvalue}}"
       - name: Deploy
         run: echo "Deploying..."
